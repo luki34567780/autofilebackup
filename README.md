@@ -1,2 +1,6 @@
 # autofilebackup
 Backup creater written in CPython 3
+
+WARNING!
+PROGRAM IS IN ALPHA AND VERY BUGGY
+I DO NOT ADVICE TO USE THIS PROGRAM FOR NOW
