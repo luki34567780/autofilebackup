@@ -17,10 +17,11 @@ debug = "n"
 debugtime = "n"
 source = "n/a"
 diskspeed = 50
+backuptime = 0
 try:
     readini()
-except:
-    time.sleep(0)
+if(doespathexist("config.cfg")):
+    readini()
 def readini():
     config_array_rdy = []
     with open('config.cfg') as my_file:
@@ -43,9 +44,6 @@ def doespathexist(source):
     if(os.path.isfile) and (os.path.isdir):
         return(True)
     return(False)
-
-    
-
 def getFolderSize(folder,debug):
     total_size = os.path.getsize(folder)
     for item in os.listdir(folder):
@@ -175,37 +173,61 @@ def copydir(speed, source, maxbackus, backuptime, debug, timedebug):
     return 0
 def getFileSize(source,debug):
     filesizebites = os.path.getsize(source)
-    return filesizebites
-
+    return int(filesizebites)
+def readargumentsstart(debug):
+    if (len(sys.argv) != 4):
+        config_array_fail = "n/a",0,"n/a","n/a" 
+        return
+    config_array_rdy = []
+    config_array = sys.argv
+    for x in len(sys.argv):
+        if(config_array[x].startswith("source=")):
+            config_array[x].strip("source=")
+            config_array_rdy[0] = config_array[x]
+        if(config_array[x].startswith("backuptime=")):
+            config_array[x].strip("backuptime=")
+            config_array_rdy[1] = config_array[x]
+        if(config_array[x].startwith("maxbackups=")):
+            config_array[x].strip("maxbackups=")
+            config_array_rdy[2] = config_array[x]
+        if(config_array[x].startwith("diskspeed=")):
+            config_array[x].strip("diskspeed=")
+            config_array_rdy[3] = config_array[x]
+    return(config_array_rdy)
 try:
     system("cls")
 except:
     system("clear")
-if(len(sys.argv) >= 2):
-    if(str(sys.argv[1]) == "h"):
-        print("Hilfeseite für Luki's Autofilebackup")
-        print("################################################################################")
-        print("Aufbau")
-        print("[dir or file] [source] [Interval] [max backups]")
-        print("################################################################################")
-        print("d            Setzt einen Ordner als Ziel(veraltet, Programm erkennt automatisch ob Ordner oder Datei)")
-        print("f            Setzt eine Datei als Ziel(veraltet, Programm erkennt automatisch ob Ordner oder Datei")
-        print("source       Setzt die Datei/Den Ordner der zu kopieren ist fest")
-        print("Interval     Sagt aus in welchen Intervallen die Backups erstellt werden sollen")
-        print("max backups  Setzt die Maximale Anzahl an Backups fest")
-        print("Notiz: Bindestrich vor Argument ist optional, wird aber für Powershell benötigt")
+if (len(sys.argv) == 4):
+    arguments = readargumentsstart()
+    source = arguments[0]
+    backuptime = arguments[1]
+    maxbackups = arguments[2]
+    diskspeed = arguments[3]
+if(len(sys.argv) <= 2) and (int(backuptime) == 0):
+    if(len(sys.argv) == 2):
+        if(str(sys.argv[1]) == "h"):
+            print("Hilfeseite für Luki's Autofilebackup")
+            print("################################################################################")
+            print("Aufbau")
+            print("[dir or file] [source] [Interval] [max backups]")
+            print("################################################################################")
+            print("d            Setzt einen Ordner als Ziel(veraltet, Programm erkennt automatisch ob Ordner oder Datei)")
+            print("f            Setzt eine Datei als Ziel(veraltet, Programm erkennt automatisch ob Ordner oder Datei")
+            print("source       Setzt die Datei/Den Ordner der zu kopieren ist fest")
+            print("Interval     Sagt aus in welchen Intervallen die Backups erstellt werden sollen")
+            print("max backups  Setzt die Maximale Anzahl an Backups fest")
+            print("Notiz: Bindestrich vor Argument ist optional, wird aber für Powershell benötigt")
 
-        sys.exit(0)
+            sys.exit(0)
 print('Autofilebackup by Luki')
 time.sleep(3)
 try:
     system("cls")
 except:
     system("clear")
-if(len(sys.argv) <= 1) and not(doespathexist("config.cfg")):
-    diskspeed = 0
-    backuptime = 0
-    maxbackups = 0
+if(not(doespathexist("config.cfg")) and (int(backuptime) == 0)):
+
     source = input("Please input dir or file to be copied: ")
     backuptime = input("please input the time between backups in minutes: ")
     maxbackups = input("Please input the number of Backups (0 for infinity): ")
@@ -235,11 +257,11 @@ if(len(sys.argv) <= 1) and not(doespathexist("config.cfg")):
     if (os.path.isdir(source)):
         print("Additional time for writing of dir:", ((int(getFolderSize(source, debug) /  1000000) / (int(round(float(diskspeed) * 0.8),0)))), "seconds")
     if (os.path.isfile(source)):
-         print("Additional time for writing of file:", ((int(getFileSize(source, debug) /  1000000) / (int(round(float(diskspeed) * 0.8),0)))), "seconds")
+         print("Additional time for writing of file:", getFileSize(source, debug) /  1000000 / int(round(float(diskspeed) * 0.8,0)), "seconds")
 
     debug = "n"
     timedebug = "n"
-if(len(sys.argv) >= 2 and len(sys.argv) <= 6 and (sys.argv[1] == "d" or sys.argv[1] == "f")):
+if(len(sys.argv) >= 2 and len(sys.argv) <= 6 and (sys.argv[1] == "d" or sys.argv[1] == "f")  and (int(debugtime) == 0)):
     print("Reading start arguments...")
     if(str(sys.argv[1]) == "d"): dir_or_file = "dir"
     if(str(sys.argv[1]) == "f"): dir_or_file = "file"
@@ -265,7 +287,7 @@ if(len(sys.argv) >= 2 and len(sys.argv) <= 6 and (sys.argv[1] == "d" or sys.argv
         print("timedebug is set to true")
     if(str(timedebug) == "n"):
         print("Time debug is set to false")
-if(len(sys.argv) >= 2 and len(sys.argv) <= 6 and (sys.argv[1] == "-d" or sys.argv[1] == "-f")):
+if(len(sys.argv) >= 2 and len(sys.argv) <= 6 and (sys.argv[1] == "-d" or sys.argv[1] == "-f")  and (int(debugtime) == 0)):
     print("Reading launch arguments...")
     str.lstrip(sys.argv[1])
     str.lstrip(sys.argv[2])
@@ -281,7 +303,7 @@ if(len(sys.argv) >= 2 and len(sys.argv) <= 6 and (sys.argv[1] == "-d" or sys.arg
     debug = str(sys.argv[5])
     timedebug = str(sys.argv[6])
     print("Finished reading start arguments")
-if(len(sys.argv) >= 2 and len(sys.argv) <= 5 and (sys.argv[1] == "d" or sys.argv[1] == "f")):
+if(len(sys.argv) >= 2 and len(sys.argv) <= 5 and (sys.argv[1] == "d" or sys.argv[1] == "f")  and (int(debugtime) == 0)):
     print("Lese Startargumente ein...")
     if(str(sys.argv[1]) == "d"): dir_or_file = "dir"
     if(str(sys.argv[1]) == "f"): dir_or_file = "file"
@@ -291,7 +313,7 @@ if(len(sys.argv) >= 2 and len(sys.argv) <= 5 and (sys.argv[1] == "d" or sys.argv
     print("Einlesen der Startargumente beendet")
     debug = "n"
     timedebug = "n"
-if(len(sys.argv) >= 2 and len(sys.argv) <= 5 and (sys.argv[1] == "-d" or sys.argv[1] == "-f")):
+if(len(sys.argv) >= 2 and len(sys.argv) <= 5 and (sys.argv[1] == "-d" or sys.argv[1] == "-f") and (int(debugtime) == 0)):
     print("Lese Startargumente ein...")
     str.lstrip(sys.argv[1])
     str.lstrip(sys.argv[2])
@@ -305,7 +327,6 @@ if(len(sys.argv) >= 2 and len(sys.argv) <= 5 and (sys.argv[1] == "-d" or sys.arg
     print("Einlesen der Startargumente beendet")
     debug = "n"
     timedebug = "n"   
-
 if(dir_or_file == "n/a"):
     if os.path.isdir(source):  
         dir_or_file = "dir"  
@@ -319,13 +340,13 @@ if(dir_or_file == "dir"):
     if not(int(maxbackups) <= int(round(backupsperday, 0))) or (int(maxbackups) == int(0)):
 
         if(sizeperdaymb <= 10000):
-            print("Space ussage every day:", int(sizeperdaymb), "MB")
+            print("Space ussage every day:", round(float(sizeperdaymb), 2), "MB")
         else:
             print("Space ussage every day:",int(sizeperdaygb), "GB")  
     if(int(maxbackups) <= int(round(backupsperday, 0))) and (int(maxbackups) != int(0)):
         sizeoverallmb = getFolderSize(source, debug) / 1000000 * int(maxbackups)
         if(sizeoverallmb <= 10000):
-            print("Space ussage over all:", int(sizeoverallmb),"MB")
+            print("Space ussage over all:",round(float(sizeoverallmb), 2),"MB")
         else:
             print("Space ussage over all:",int(sizeoverallmb) / 1000 ,"GB")
 
