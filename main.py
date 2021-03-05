@@ -12,16 +12,6 @@ except:
     print("Please ry running install.py!")
     time.sleep(15)
     raise EnvironmentError("missing dependencys!")
-dir_or_file = "n/a"
-debug = "n"
-debugtime = "n"
-source = "n/a"
-diskspeed = 50
-backuptime = 0
-try:
-    readini()
-if(doespathexist("config.cfg")):
-    readini()
 def readini():
     config_array_rdy = []
     with open('config.cfg') as my_file:
@@ -41,7 +31,7 @@ def readini():
                 config_array_rdy[3] = config_array[x]
             return(config_array_rdy)
 def doespathexist(source):
-    if(os.path.isfile) and (os.path.isdir):
+    if(os.path.isfile(source)) or (os.path.isdir(source)):
         return(True)
     return(False)
 def getFolderSize(folder,debug):
@@ -174,13 +164,13 @@ def copydir(speed, source, maxbackus, backuptime, debug, timedebug):
 def getFileSize(source,debug):
     filesizebites = os.path.getsize(source)
     return int(filesizebites)
-def readargumentsstart(debug):
-    if (len(sys.argv) != 4):
+def readargumentsstart(debug, test):
+    if (len(test) != 4):
         config_array_fail = "n/a",0,"n/a","n/a" 
-        return
+        return config_array_fail
     config_array_rdy = []
-    config_array = sys.argv
-    for x in len(sys.argv):
+    config_array = test
+    for x in len(test):
         if(config_array[x].startswith("source=")):
             config_array[x].strip("source=")
             config_array_rdy[0] = config_array[x]
@@ -194,12 +184,20 @@ def readargumentsstart(debug):
             config_array[x].strip("diskspeed=")
             config_array_rdy[3] = config_array[x]
     return(config_array_rdy)
+dir_or_file = "n/a"
+debug = "n"
+debugtime = "n"
+source = "n/a"
+diskspeed = 50
+backuptime = 0
+if(doespathexist("config.cfg")):
+    readini()
 try:
     system("cls")
 except:
     system("clear")
 if (len(sys.argv) == 4):
-    arguments = readargumentsstart()
+    arguments = readargumentsstart(debug, sys.argv)
     source = arguments[0]
     backuptime = arguments[1]
     maxbackups = arguments[2]
