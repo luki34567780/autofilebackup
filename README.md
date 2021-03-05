@@ -1,2 +1,2 @@
 # autofilebackup
-Automaticly creates backups of Files
+Backup creater written in CPython 3
