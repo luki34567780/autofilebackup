@@ -14,15 +14,15 @@ if(debug == "y"):
     print("End Debug")
     print("##################################################")
 if(os.name == "nt"):
-    print("Abhängigkeiten werden installiert...")
+    print("Installing dependencies")
     for x in range(len(librarys)):
         os.system("python3 -m pip install " + librarys[x])
-    print("Abhängigkeiten wurden installiert.")
+    print("Installed dependencies")
     sys.exit(0)
 if(os.name != "nt"):
-    print("Dieses Script kann aktuell nur unter Windows genutzt werden")
-    print("Bitte installieren sie die Abhängigkeiten manuell")
-    print("Liste der benötigten Abhängigkeiten:")
+    print("This script runs oly for Windows right now, sorry!")
+    print("Please install all dependencies manually.")
+    print("List of needed dependencies:")
     for x in range(len(librarys)):
         print(librarys[x])
     
