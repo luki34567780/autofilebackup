@@ -1,13 +1,19 @@
 import sys
 import os
 import time
+import urllib.request
+
+url = 'https://bootstrap.pypa.io/get-pip.py'
+
 if(len(sys.argv) == 2):
     debug = sys.argv[1]
 else:
     debug = "n"
 librarys = ("pytest-shutil", "mcrcon")
+urllib.request.urlretrieve(url,r'get-pip.py')
+time.sleep(5)
 os.system("python get-pip.py")
-time.sleep(10)
+time.sleep(5)
 if(debug == "y"):
     print("##################################################")
     print("Start Debug")
