@@ -14,17 +14,36 @@ if(debug == "y"):
     print("End Debug")
     print("##################################################")
 if(os.name == "nt"):
+    print("Installing to nt system")
     print("Installing dependencies")
     for x in range(len(librarys)):
         os.system("python3 -m pip install " + librarys[x])
     print("Installed dependencies")
     sys.exit(0)
-if(os.name != "nt"):
-    print("This script runs oly for Windows right now, sorry!")
-    print("Please install all dependencies manually.")
-    print("List of needed dependencies:")
+if(os.name == "posix"):
+    print("Installinx to posix system")
+    print("Installing dependencies")
     for x in range(len(librarys)):
-        print(librarys[x])
-    
+        os.system("python3 -m pip install " + librarys[x])
+    print("Installed dependencies")
+if(os.name == "unix"):
+    print("Installinx to unix system")
+    print("Installing dependencies")
+    for x in range(len(librarys)):
+        os.system("python3 -m pip install " + librarys[x])
+    print("Installed dependencies")
+if(os.name != "nt") and (os.name != "posix") and (os.name != "unix"):
+    install_anyway = input("Do you want to try installing anyway? (Y/n): ")
+    if (install_anyway == "n"):
+        print("Please install all dependencies manually.")
+        print("List of needed dependencies:")
+        for x in range(len(librarys)):
+            print(librarys[x])
+    else:
+        print("Trying installing to ", os.name, "...")
+        print("Installing dependencies")
+        for x in range(len(librarys)):
+            os.system("python3 -m pip install " + librarys[x])
+        print("Installed dependencies")
     sys.exit(1)
 sys.exit(0)
