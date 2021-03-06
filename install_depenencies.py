@@ -5,6 +5,8 @@ if(len(sys.argv) == 2):
 else:
     debug = "n"
 librarys = ("pytest-shutil", "mcrcon")
+    os.system("python get-pip.py")
+    sleep(10)
 if(debug == "y"):
     print("##################################################")
     print("Start Debug")
