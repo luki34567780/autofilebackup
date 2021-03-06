@@ -1,12 +1,13 @@
 import sys
 import os
+import time
 if(len(sys.argv) == 2):
     debug = sys.argv[1]
 else:
     debug = "n"
 librarys = ("pytest-shutil", "mcrcon")
-    os.system("python get-pip.py")
-    sleep(10)
+os.system("python get-pip.py")
+time.sleep(10)
 if(debug == "y"):
     print("##################################################")
     print("Start Debug")
